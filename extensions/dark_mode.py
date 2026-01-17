@@ -10,8 +10,14 @@ def on_page_load(browser):
         `;
         document.head.appendChild(s);
     }
+
     applyDarkMode();
-    // Re-apply every second to catch dynamic content
-    setInterval(applyDarkMode, 1000);
+
+    // Observe DOM changes (catch dynamic content like SPAs)
+    const observer = new MutationObserver(() => applyDarkMode());
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also re-apply every 2 seconds as a fallback
+    setInterval(applyDarkMode, 2000);
     """
     browser.page().runJavaScript(js)
